@@ -4,8 +4,14 @@
 
 order = [[20,20],[50,50],[150,150],[250,150],[100,150],[200,150],[100,100],[10,100],[100,50],[50,250]]; // [width,height]
 
+total = order.length;
+orderArea = totalArea(order);
+console.log("Number of cuts ordered: ",total);
+
+
 Width = 600;
 Height = 500;
+Area = Width*Height;
 
  
 var svg = d3.select("body").append("div")
@@ -19,6 +25,12 @@ var svg = d3.select("body").append("div")
 verticalFill(Width,Height,0,0);
 //horizontalFill(Width,Height,0,0);
 
+usedArea = orderArea - totalArea(order);
+efficiency = (usedArea/Area);
+console.log("Number of cuts made: ",total - order.length);
+console.log("Efficiency: ",efficiency);
+console.log(order);
+
 function verticalFill(W, H, xIndex, yIndex) {
 	var xStart = xIndex;
 	var yStart = yIndex;
@@ -28,19 +40,17 @@ function verticalFill(W, H, xIndex, yIndex) {
 	order.sort(sortWidth);
 	while (order.length > 0) {
 		cut = search(order, colWidth, rowHeight);
-		console.log("Cut:", cut);
 		if (cut != null) { var cutWidth = cut[0], cutHeight = cut[1];}
 		else {
 			xIndex += colWidth;
 			colWidth = W - (xIndex - xStart);
 			if (colWidth < 0) { break;}
-			console.log(colWidth);
 			yIndex = yStart;
 			rowHeight = H;
+			if (rowHeight > colWidth) {orientation(order, "height");}
 			cut = search(order, colWidth, rowHeight);
 			if (cut != null) { var cutWidth = cut[0], cutHeight = cut[1];}
 			else {break;}
-			console.log(cut);
 		};
 		svg.append("rect")
 			.attr("transform", "translate(" + xIndex + "," + yIndex + ")")
@@ -71,19 +81,17 @@ function horizontalFill(W, H, xIndex, yIndex) {
 	order.sort(sortHeight);
 	while (order.length > 0) {
 		cut = search(order, colWidth, rowHeight);
-		console.log("Cut:", cut);
 		if (cut != null) { var cutWidth = cut[0], cutHeight = cut[1];}
 		else {
 			yIndex += rowHeight;
 			rowHeight = H - (yIndex - yStart);
 			if (rowHeight < 0) { break;}
-			console.log(rowHeight);
 			xIndex = xStart;
 			colWidth = W;
+			if (colWidth > rowHeight) {orientation(order, "width");}
 			cut = search(order, colWidth, rowHeight);
 			if (cut != null) { var cutWidth = cut[0], cutHeight = cut[1];}
 			else {break;}
-			console.log(cut);
 		};
 		svg.append("rect")
 			.attr("transform", "translate(" + xIndex + "," + yIndex + ")")
@@ -144,4 +152,12 @@ function search(list, maxWidth, maxHeight) {
 		}
 	}
 	return null;
+}
+
+function totalArea(list) {
+	var area = 0;
+	for (i in list) {
+		area += list[i][0]*list[i][1];
+	}
+	return area;
 }
