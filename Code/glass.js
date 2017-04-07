@@ -2,10 +2,10 @@
 ...
 */
 
-order = [[20,20],[50,50],[150,150],[250,150],[100,150],[200,150],[100,100],[10,100],[100,50]]; // [width,height]
+order = [[20,20],[50,50],[150,150],[250,150],[100,150],[200,150],[100,100],[10,100],[100,50],[50,250]]; // [width,height]
 
-Width = 500;
-Height = 300;
+Width = 600;
+Height = 500;
 
  
 var svg = d3.select("body").append("div")
@@ -27,13 +27,12 @@ function verticalFill(W, H, xIndex, yIndex) {
 	order.sort(sortHeight);
 	order.sort(sortWidth);
 	while (order.length > 0) {
-		console.log(colWidth);
 		cut = search(order, colWidth, rowHeight);
 		console.log("Cut:", cut);
 		if (cut != null) { var cutWidth = cut[0], cutHeight = cut[1];}
 		else {
 			xIndex += colWidth;
-			colWidth = W - xIndex;
+			colWidth = W - (xIndex - xStart);
 			if (colWidth < 0) { break;}
 			console.log(colWidth);
 			yIndex = yStart;
@@ -51,8 +50,15 @@ function verticalFill(W, H, xIndex, yIndex) {
 		if (yIndex == yStart) {
 			colWidth = cutWidth;
 		}
+		if ((cutHeight >= (colWidth - cutWidth)) && ((colWidth - cutWidth) > 0)) {
+			horizontalFill(colWidth - cutWidth, cutHeight, xIndex + cutWidth, yIndex);
+			orientation(order, "width");
+		}
+		else if ((cutHeight < (colWidth - cutWidth)) && ((colWidth - cutWidth) > 0)) {
+			verticalFill(colWidth - cutWidth, cutHeight, xIndex + cutWidth, yIndex);
+		};
 		yIndex += cutHeight;
-		rowHeight = H - yIndex;
+		rowHeight = H - (yIndex - yStart);
 	}
 };
 
@@ -64,13 +70,12 @@ function horizontalFill(W, H, xIndex, yIndex) {
 	order.sort(sortWidth);
 	order.sort(sortHeight);
 	while (order.length > 0) {
-		console.log(rowHeight);
 		cut = search(order, colWidth, rowHeight);
 		console.log("Cut:", cut);
 		if (cut != null) { var cutWidth = cut[0], cutHeight = cut[1];}
 		else {
 			yIndex += rowHeight;
-			rowHeight = H - yIndex;
+			rowHeight = H - (yIndex - yStart);
 			if (rowHeight < 0) { break;}
 			console.log(rowHeight);
 			xIndex = xStart;
@@ -88,8 +93,15 @@ function horizontalFill(W, H, xIndex, yIndex) {
 		if (xIndex == xStart) {
 			rowHeight = cutHeight;
 		}
+		if ((cutWidth >= (rowHeight - cutHeight)) && ((rowHeight - cutHeight) > 0)) {
+			verticalFill(cutWidth, rowHeight - cutHeight, xIndex, yIndex + cutHeight);
+			orientation(order, "height");
+		}
+		else if ((cutWidth < (rowHeight - cutHeight)) && ((rowHeight - cutHeight) > 0)) {
+			horizontalFill(cutWidth, rowHeight - cutHeight, xIndex, yIndex + cutHeight);
+		};
 		xIndex += cutWidth;
-		colWidth = W - xIndex;
+		colWidth = W - (xIndex - xStart);
 	}
 };
 
