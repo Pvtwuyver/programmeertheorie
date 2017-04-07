@@ -2,16 +2,29 @@
 ...
 */
 
-order = [[20,20],[50,50],[150,150],[250,150],[100,150],[200,150],[100,100],[10,100],[100,50],[50,250]]; // [width,height]
-
-total = order.length;
-orderArea = totalArea(order);
-console.log("Number of cuts ordered: ",total);
-
-
+// size
 Width = 600;
 Height = 500;
 Area = Width*Height;
+
+// --- pre-specified order
+//order = [[20,20],[50,50],[150,150],[250,150],[100,150],[200,150],[100,100],[10,100],[100,50],[50,250]]; // [width,height]
+
+// --- random order
+orderArea = 0;
+count = 0;
+order = [];
+
+while (orderArea <= Area) {
+	var randomWidth = Math.round(randomSize()), randomHeight = Math.round(randomSize());
+	randomCut = [randomWidth,randomHeight]
+	orderArea += randomWidth*randomHeight;
+	order[count] = randomCut;
+	count++;
+}
+
+total = order.length;
+console.log("Number of cuts ordered: ",total, orderArea, Area);
 
  
 var svg = d3.select("body").append("div")
@@ -39,18 +52,27 @@ function verticalFill(W, H, xIndex, yIndex) {
 	order.sort(sortHeight);
 	order.sort(sortWidth);
 	while (order.length > 0) {
+		console.log("vertical - colWidth:", colWidth, "rowHeight", rowHeight);
 		cut = search(order, colWidth, rowHeight);
+		console.log("Cut: ", cut);
 		if (cut != null) { var cutWidth = cut[0], cutHeight = cut[1];}
 		else {
+			console.log("new col");
 			xIndex += colWidth;
 			colWidth = W - (xIndex - xStart);
-			if (colWidth < 0) { break;}
+			if (colWidth < 0) { console.log("break / no room");break;}
 			yIndex = yStart;
 			rowHeight = H;
-			if (rowHeight > colWidth) {orientation(order, "height");}
+			/**
+			if ((rowHeight > colWidth) && (colWidth > 0) && (rowHeight > 0)) {
+				horizontalFill(colWidth,rowHeight,xIndex,yIndex);
+				orientation(order, "width");
+			}
+			**/
 			cut = search(order, colWidth, rowHeight);
+			console.log("Cut: ", cut);
 			if (cut != null) { var cutWidth = cut[0], cutHeight = cut[1];}
-			else {break;}
+			else {console.log("break/ no fit");break;}
 		};
 		svg.append("rect")
 			.attr("transform", "translate(" + xIndex + "," + yIndex + ")")
@@ -60,13 +82,15 @@ function verticalFill(W, H, xIndex, yIndex) {
 		if (yIndex == yStart) {
 			colWidth = cutWidth;
 		}
-		if ((cutHeight >= (colWidth - cutWidth)) && ((colWidth - cutWidth) > 0)) {
+		console.log("Room left:", (colWidth - cutWidth), cutHeight);
+		if ((cutHeight > (colWidth - cutWidth)) && ((colWidth - cutWidth) > 0)) {
 			horizontalFill(colWidth - cutWidth, cutHeight, xIndex + cutWidth, yIndex);
 			orientation(order, "width");
 		}
-		else if ((cutHeight < (colWidth - cutWidth)) && ((colWidth - cutWidth) > 0)) {
+		else if ((cutHeight <= (colWidth - cutWidth)) && ((colWidth - cutWidth) > 0)) {
 			verticalFill(colWidth - cutWidth, cutHeight, xIndex + cutWidth, yIndex);
-		};
+		}
+		else {console.log("No recursion possible");};
 		yIndex += cutHeight;
 		rowHeight = H - (yIndex - yStart);
 	}
@@ -80,18 +104,27 @@ function horizontalFill(W, H, xIndex, yIndex) {
 	order.sort(sortWidth);
 	order.sort(sortHeight);
 	while (order.length > 0) {
+		console.log("horizontal - colWidth:", colWidth, "rowHeight", rowHeight);
 		cut = search(order, colWidth, rowHeight);
+		console.log("Cut: ", cut);
 		if (cut != null) { var cutWidth = cut[0], cutHeight = cut[1];}
 		else {
+			console.log("new row");
 			yIndex += rowHeight;
 			rowHeight = H - (yIndex - yStart);
-			if (rowHeight < 0) { break;}
+			if (rowHeight < 0) { console.log("break / no room");break;}
 			xIndex = xStart;
 			colWidth = W;
-			if (colWidth > rowHeight) {orientation(order, "width");}
+			/**
+			if ((colWidth > rowHeight) && (colWidth > 0) && (rowHeight > 0)) {
+				verticalFill(colWidth,rowHeight,xIndex,yIndex);
+				orientation(order, "height");
+			}
+			**/
 			cut = search(order, colWidth, rowHeight);
+			console.log("Cut: ", cut);
 			if (cut != null) { var cutWidth = cut[0], cutHeight = cut[1];}
-			else {break;}
+			else {console.log("break/ no fit");break;}
 		};
 		svg.append("rect")
 			.attr("transform", "translate(" + xIndex + "," + yIndex + ")")
@@ -101,13 +134,15 @@ function horizontalFill(W, H, xIndex, yIndex) {
 		if (xIndex == xStart) {
 			rowHeight = cutHeight;
 		}
-		if ((cutWidth >= (rowHeight - cutHeight)) && ((rowHeight - cutHeight) > 0)) {
+		console.log("Room left:", cutWidth, (rowHeight - cutHeight));
+		if ((cutWidth > (rowHeight - cutHeight)) && ((rowHeight - cutHeight) > 0)) {
 			verticalFill(cutWidth, rowHeight - cutHeight, xIndex, yIndex + cutHeight);
 			orientation(order, "height");
 		}
-		else if ((cutWidth < (rowHeight - cutHeight)) && ((rowHeight - cutHeight) > 0)) {
+		else if ((cutWidth <= (rowHeight - cutHeight)) && ((rowHeight - cutHeight) > 0)) {
 			horizontalFill(cutWidth, rowHeight - cutHeight, xIndex, yIndex + cutHeight);
-		};
+		}
+		else {console.log("No recursion possible");};
 		xIndex += cutWidth;
 		colWidth = W - (xIndex - xStart);
 	}
@@ -135,6 +170,7 @@ function sortHeight(a, b) {
 
 // change the orientation of a glass cut
 function orientation(list, side) {
+	console.log("change orientation", side);
 	for (item in list) {	
 		var max = Math.max(list[item][0],list[item][1]), min = Math.min(list[item][0],list[item][1]);
 		if (side == "width") {list[item][0] = max; list[item][1] = min;}
@@ -160,4 +196,12 @@ function totalArea(list) {
 		area += list[i][0]*list[i][1];
 	}
 	return area;
+}
+
+function randomSize() {
+	var value = 0;
+	while (value < 0.01) {
+		value = ((Math.random() + Math.random() + Math.random() + Math.random() + Math.random() + Math.random()) - 3) / 3;
+	}	
+	return 350*Math.abs(value);
 }
