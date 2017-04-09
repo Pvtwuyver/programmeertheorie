@@ -11,7 +11,20 @@ Area = Width*Height;
 //order = [[20,20],[50,50],[150,150],[250,150],[100,150],[200,150],[100,100],[10,100],[100,50],[50,250]]; // [width,height]
 
 // order = [[190,270],[90,160],[120,290],[110,220],[160,120],[90,120],[200,100],[110,290],[120,170],[100,320],[90,160],[190,300],[170,250],[180,340],
-// [170,180],[90,100],[110,270],[70,220],[40,130],[140,330],[130,110],[40,240]]
+// [170,180],[90,100],[110,270],[70,220],[40,130],[140,330],[130,110],[40,240]];
+
+// read tsv file and create order in [[h,w],[h,w]] format
+// var order = [];
+// d3.tsv("Glaslijsten/GlasLijst1.tsv", function(error, data) {
+//   if (error) throw error;
+//   // Coerce the data to numbers.
+//   data.forEach(function(d) {
+//     d.w = +d.w;
+//     d.h = +d.h;
+//     order.push([d.w,d.h]);
+//   });
+//   console.log(order);
+// })
 
 // --- random order
 orderArea = 0;
