@@ -1,1 +1,2 @@
 python glass.py
+pause

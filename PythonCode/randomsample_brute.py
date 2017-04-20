@@ -25,15 +25,6 @@ def verticalFill(list, W, H, xIndex, yIndex):
 				cutWidth, cutHeight = cut[0], cut[1]
 			else:
 				break
-		ax1 = fig1.add_subplot(111, aspect='equal')
-		ax1.add_patch(
-			patches.Rectangle(
-				(xIndex, yIndex),   # (x,y)
-				cutWidth,          # width
-				cutHeight,          # height
-				facecolor = "#efda62"
-			)
-		)
 		if yIndex == yStart:
 			colWidth = cutWidth
 		# room left?
@@ -87,6 +78,7 @@ order = [
 [140,330],
 [130,110],
 [40,240]]
+beginOrder = list(order)
 
 def totalArea(list):
 	area = 0
@@ -94,24 +86,28 @@ def totalArea(list):
 		area += i[0]*i[1]
 	return area
 
-#randomCut(order,600,500)
+	
+scores = []
+best = 1000000
+for i in range(0,300):
+	beginArea = totalArea(order)
+	wasteArray = []
+	numberOfSheets = 0
+	
+	while len(order) > 0:
 
-beginArea = totalArea(order)
-wasteArray = []
-numberOfSheets = 0
+		order = verticalFill(order, Width, Height, 0, 0)
+		waste = Area - (beginArea - totalArea(order))
+		beginArea = beginArea - (beginArea - totalArea(order))
+		wasteArray.append(waste)
 
-while len(order) > 0:
-	fig1 = plt.figure()
-	order = verticalFill(order, Width, Height, 0, 0)
-	waste = Area - (beginArea - totalArea(order))
-	beginArea = beginArea - (beginArea - totalArea(order))
-	wasteArray.append(waste)
-	plt.axis([0,Width,0,Height])
-	plt.tick_params(axis='both', which='both', bottom='off', top='off', labelbottom='off', right='off', left='off', labelleft='off')
-	plt.plot()
-	numberOfSheets += 1
-plt.show()
-
-score = sum(wasteArray[0:-1])/numberOfSheets
-
-print("Score: ", score)
+		numberOfSheets += 1
+	
+	score = sum(wasteArray[0:-1])/numberOfSheets
+	if score < best:
+		best = score
+	scores.append(best)
+	print(best)
+	order = list(beginOrder)
+	
+print(scores)
