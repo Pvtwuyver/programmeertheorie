@@ -90,7 +90,7 @@ sheets = []
 scores = []
 best = 1000000
 bestLayout = []
-for i in range(0,1000):
+for i in range(0,20000):
 	beginArea = totalArea(order)
 	wasteArray = []
 	locations = []
@@ -128,4 +128,8 @@ for s in bestLayout:
 	plt.axis([0,Width,0,Height])
 	plt.tick_params(axis='both', which='both', bottom='off', top='off', labelbottom='off', right='off', left='off', labelleft='off')
 	plt.plot()
+
+plt.show()
+fig2 = plt.figure()
+plt.plot(scores)
 plt.show()
