@@ -3,9 +3,8 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import random
 import numpy as np
-	
 		
-def verticalFill(list, W, H, xIndex, yIndex):
+def verticalFill(list, W, H, xIndex, yIndex, layout):
 	xStart = xIndex
 	yStart = yIndex	
 	colWidth, rowHeight = W, H
@@ -25,13 +24,14 @@ def verticalFill(list, W, H, xIndex, yIndex):
 				cutWidth, cutHeight = cut[0], cut[1]
 			else:
 				break
+		layout.append([xIndex, yIndex, cutWidth, cutHeight])
 		if yIndex == yStart:
 			colWidth = cutWidth
 		# room left?
-		list = verticalFill(list, colWidth - cutWidth, cutHeight, xIndex + cutWidth, yIndex)	
+		list, layout = verticalFill(list, colWidth - cutWidth, cutHeight, xIndex + cutWidth, yIndex, layout)	
 		yIndex += cutHeight
 		rowHeight = H - (yIndex - yStart)
-	return list
+	return list, layout
 	
 def randomCut(list, maxWidth, maxHeight):
 	cut = [0,0]
@@ -86,28 +86,46 @@ def totalArea(list):
 		area += i[0]*i[1]
 	return area
 
-	
+sheets = []
 scores = []
 best = 1000000
-for i in range(0,300):
+bestLayout = []
+for i in range(0,1000):
 	beginArea = totalArea(order)
 	wasteArray = []
+	locations = []
+	totalLayout = []
 	numberOfSheets = 0
 	
 	while len(order) > 0:
-
-		order = verticalFill(order, Width, Height, 0, 0)
+		order, sheetLayout = verticalFill(order, Width, Height, 0, 0, [])
 		waste = Area - (beginArea - totalArea(order))
 		beginArea = beginArea - (beginArea - totalArea(order))
 		wasteArray.append(waste)
-
+		totalLayout.append(sheetLayout)
 		numberOfSheets += 1
 	
 	score = sum(wasteArray[0:-1])/numberOfSheets
 	if score < best:
 		best = score
+		bestLayout = list(totalLayout)
 	scores.append(best)
-	print(best)
+	print(i,best)
 	order = list(beginOrder)
 	
-print(scores)
+for s in bestLayout:
+	fig1 = plt.figure()
+	for w in s:
+		ax1 = fig1.add_subplot(111, aspect='equal')
+		ax1.add_patch(
+			patches.Rectangle(
+				(w[0], w[1]),   # (x,y)
+				w[2],          # width
+				w[3],          # height
+				facecolor = "#efda62"
+			)
+		)
+	plt.axis([0,Width,0,Height])
+	plt.tick_params(axis='both', which='both', bottom='off', top='off', labelbottom='off', right='off', left='off', labelleft='off')
+	plt.plot()
+plt.show()
