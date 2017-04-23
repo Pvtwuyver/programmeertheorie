@@ -1,0 +1,2 @@
+python order2_randomsample_brute.py
+pause
