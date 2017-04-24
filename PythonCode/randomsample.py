@@ -110,8 +110,7 @@ while len(order) > 0:
 	plt.tick_params(axis='both', which='both', bottom='off', top='off', labelbottom='off', right='off', left='off', labelleft='off')
 	plt.plot()
 	numberOfSheets += 1
-plt.show()
 
-score = sum(wasteArray[0:-1])/numberOfSheets
-
+score = (Area - (sum(wasteArray[0:-1])/numberOfSheets))/float(Area)
 print("Score: ", score)
+plt.show()
