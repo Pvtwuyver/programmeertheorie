@@ -16,17 +16,27 @@ def sortHeight(list):
 	sortedList = sorted(list, key=lambda x: (x[1],x[0]), reverse=True)
 	return sortedList
 	
+def sortArea(list):
+	sortedList = sorted(list, key=lambda x: (x[1]*x[0]), reverse=True)
+	return sortedList
+	
+def sortCirc(list):
+	sortedList = sorted(list, key=lambda x: (x[1]+x[0]), reverse=True)
+	return sortedList
+	
 def orientation(list, side):
 	if side == "width":
 		for item in list:
 			bigSide, smallSide = max(item[0],item[1]), min(item[0],item[1])
 			item[0], item[1] = bigSide, smallSide
+		#list = sortCirc(list)
 		list = sortWidth(list)
 		return list
 	elif side == "height":
 		for item in list:
 			bigSide, smallSide = max(item[0],item[1]), min(item[0],item[1])
 			item[0], item[1] = smallSide, bigSide
+		#list = sortCirc(list)
 		list = sortHeight(list)
 		return list
 

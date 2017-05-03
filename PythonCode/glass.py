@@ -16,18 +16,31 @@ def sortHeight(list):
 	sortedList = sorted(list, key=lambda x: (x[1],x[0]), reverse=True)
 	return sortedList
 	
+def sortArea(list):
+	sortedList = sorted(list, key=lambda x: (x[1]*x[0]), reverse=True)
+	return sortedList
+	
+def sortCirc(list):
+	sortedList = sorted(list, key=lambda x: (x[1]+x[0]), reverse=True)
+	return sortedList
+	
 def orientation(list, side):
 	if side == "width":
 		for item in list:
 			bigSide, smallSide = max(item[0],item[1]), min(item[0],item[1])
 			item[0], item[1] = bigSide, smallSide
 		list = sortWidth(list)
+		#list = sortArea(list)
+
 		return list
 	elif side == "height":
 		for item in list:
 			bigSide, smallSide = max(item[0],item[1]), min(item[0],item[1])
 			item[0], item[1] = smallSide, bigSide
+		
 		list = sortHeight(list)
+		#list = sortArea(list)
+
 		return list
 
 def search(list, maxWidth, maxHeight):
@@ -37,14 +50,13 @@ def search(list, maxWidth, maxHeight):
 			return i
 	return None 
 		
-def verticalFill(list, W, H, xIndex, yIndex):
+def verticalFill(list, W, H, xIndex, yIndex, layout):
 	xStart = xIndex
 	yStart = yIndex	
 	colWidth, rowHeight = W, H
 	while len(list) > 0:
 		# initial search
 		list = orientation(list, "width")
-		print("search: ", colWidth, rowHeight, " In list: ", list)
 		cut = search(list, colWidth, rowHeight)
 		if cut is not None: 
 			cutWidth, cutHeight = cut[0], cut[1]
@@ -56,7 +68,6 @@ def verticalFill(list, W, H, xIndex, yIndex):
 				cutWidth, cutHeight = cut[0], cut[1]
 			else:
 				# new column needed
-				print("new col")
 				list = orientation(list, "width")
 				xIndex += colWidth
 				colWidth = W - (xIndex - xStart)
@@ -83,23 +94,22 @@ def verticalFill(list, W, H, xIndex, yIndex):
 				facecolor = "#efda62"
 			)
 		)
+		layout.append([cutWidth, cutHeight])
 		if yIndex == yStart:
 			colWidth = cutWidth
 		# room left?
 		
 		if (cutHeight > (colWidth - cutWidth)) and ((colWidth - cutWidth) > 0):
-			print("list for recursion: ", list)
-			list = horizontalFill(list, colWidth - cutWidth, cutHeight, xIndex + cutWidth, yIndex)
+			list, layout = horizontalFill(list, colWidth - cutWidth, cutHeight, xIndex + cutWidth, yIndex, layout)
 			list = orientation(list, "width")
 		elif (cutHeight <= (colWidth - cutWidth)) and ((colWidth - cutWidth) > 0):
-			print("list for recursion: ", list)
-			list = verticalFill(list, colWidth - cutWidth, cutHeight, xIndex + cutWidth, yIndex)
+			list, layout = verticalFill(list, colWidth - cutWidth, cutHeight, xIndex + cutWidth, yIndex, layout)
 		
 		yIndex += cutHeight
 		rowHeight = H - (yIndex - yStart)
-	return list
+	return list, layout
 	
-def horizontalFill(list, W, H, xIndex, yIndex):
+def horizontalFill(list, W, H, xIndex, yIndex, layout):
 	xStart = xIndex
 	yStart = yIndex	
 	colWidth, rowHeight = W, H
@@ -146,43 +156,45 @@ def horizontalFill(list, W, H, xIndex, yIndex):
 				facecolor = "#efda62"
 			)
 		)
+		layout.append([cutWidth, cutHeight])
 		if xIndex == xStart:
 			rowHeight = cutHeight
 		# room left?
 		if (cutWidth > (rowHeight - cutHeight)) and ((rowHeight - cutHeight) > 0):
-			list = verticalFill(list, cutWidth, rowHeight - cutHeight, xIndex, yIndex + cutHeight)
+			list, layout = verticalFill(list, cutWidth, rowHeight - cutHeight, xIndex, yIndex + cutHeight)
 			list = orientation(list, "height")
 		elif (cutWidth <= (rowHeight - cutHeight)) and ((rowHeight - cutHeight) > 0):
-			list = horizontalFill(list, cutWidth, rowHeight - cutHeight, xIndex, yIndex + cutHeight)
+			list, layout = horizontalFill(list, cutWidth, rowHeight - cutHeight, xIndex, yIndex + cutHeight)
 
 		xIndex += cutWidth
 		colWidth = W - (xIndex - xStart)
-	return list
+	return list, layout
 
 Width = 600
 Height = 500
 Area = Width*Height	
 
 # glaslijst 1
-#order = [[190,270],[90,160],[120,290],[110,220],[160,120],[90,120],[200,100],[110,290],[120,170],[100,320],[90,160],[190,300],[170,250],[180,340],[170,180],[90,100],[110,270],[70,220],[40,130],[140,330],[130,110],[40,240]]
+order = [[190,270],[90,160],[120,290],[110,220],[160,120],[90,120],[200,100],[110,290],[120,170],[100,320],[90,160],[190,300],[170,250],[180,340],[170,180],[90,100],[110,270],[70,220],[40,130],[140,330],[130,110],[40,240]]
 # glaslijst 2
 #order = [[150,150],[50,110],[160,270],[130,270],[130,130],[190,160],[200,190],[170,240],[110,220],[110,140],[70,230],[140,170],[160,240],[200,130],[150,100],[190,220],[60,150],[40,240]]
 # glaslijst 3:
 #order = [[110,100],[130,240],[130,220],[90,160],[40,100],[50,140],[150,250],[70,200],[160,120],[120,120],[100,190],[190,240],[120,270],[60,130],[160,230],[170,170],[200,170],[90,210],[60,190],[120,180],[110,190],[180,270],[160,120],[160,100]]
 # glaslijst 4:
 #order = [[90,220],[110,260],[80,120],[80,280],[50,280],[80,270],[160,190],[40,190],[90,250],[180,210],[180,250],[170,270],[140,230],[110,270],[80,140],[100,270],[140,210],[120,200],[120,150]]
-# glaslijst 2,3 en 4
-# order = [[150,150],[50,110],[160,270],[130,270],[130,130],[190,160],[200,190],[170,240],[110,220],[110,140],[70,230],[140,170],[160,240],[200,130],[150,100],[190,220],[60,150],[40,240],[110,100],[130,240],[130,220],[90,160],[40,100],[50,140],[150,250],[70,200],[160,120],[120,120],[100,190],[190,240],[120,270],[60,130],[160,230],[170,170],[200,170],[90,210],[60,190],[120,180],[110,190],[180,270],[160,120],[160,100],[90,220],[110,260],[80,120],[80,280],[50,280],[80,270],[160,190],[40,190],[90,250],[180,210],[180,250],[170,270],[140,230],[110,270],[80,140],[100,270],[140,210],[120,200],[120,150]]
+#glaslijst 2,3 en 4
+#order = [[150,150],[50,110],[160,270],[130,270],[130,130],[190,160],[200,190],[170,240],[110,220],[110,140],[70,230],[140,170],[160,240],[200,130],[150,100],[190,220],[60,150],[40,240],[110,100],[130,240],[130,220],[90,160],[40,100],[50,140],[150,250],[70,200],[160,120],[120,120],[100,190],[190,240],[120,270],[60,130],[160,230],[170,170],[200,170],[90,210],[60,190],[120,180],[110,190],[180,270],[160,120],[160,100],[90,220],[110,260],[80,120],[80,280],[50,280],[80,270],[160,190],[40,190],[90,250],[180,210],[180,250],[170,270],[140,230],[110,270],[80,140],[100,270],[140,210],[120,200],[120,150]]
 # type 3:
-order = [[70,180],[180,100],[90,130],[70,180],[150,120],[60,200],[80,200],[60,240],[110,160],[120,240],[110,170],[150,230]]
+#order = [[70,180],[180,100],[90,130],[70,180],[150,120],[60,200],[80,200],[60,240],[110,160],[120,240],[110,170],[150,230]]
 
 beginArea = totalArea(order)
 wasteArray = []
+sheetLayout = []
 numberOfSheets = 0
 
 while len(order) > 0:
 	fig1 = plt.figure()
-	order = verticalFill(order, Width, Height, 0, 0)
+	order, sheetLayout = verticalFill(order, Width, Height, 0, 0, sheetLayout)
 	waste = Area - (beginArea - totalArea(order))
 	beginArea = beginArea - (beginArea - totalArea(order))
 	wasteArray.append(waste)
@@ -193,5 +205,7 @@ while len(order) > 0:
 plt.show()
 
 score = (Area - (sum(wasteArray[0:-1])/numberOfSheets))/float(Area)
+
+print(sheetLayout)
 
 print("Score: ", score)

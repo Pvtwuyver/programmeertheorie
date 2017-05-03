@@ -4,7 +4,7 @@ import matplotlib.patches as patches
 import random
 import numpy as np
 	
-		
+
 def verticalFill(list, W, H, xIndex, yIndex):
 	xStart = xIndex
 	yStart = yIndex	
