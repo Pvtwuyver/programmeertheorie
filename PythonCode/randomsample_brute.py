@@ -79,7 +79,7 @@ scores = []
 best = 0
 bestLayout = []
 
-for i in range(0,100):
+for i in range(0,10000):
 	beginArea = totalArea(order)
 	wasteArray = []
 	locations = []
@@ -125,6 +125,6 @@ plt.show()
 fig2 = plt.figure()
 plt.axis([0,len(scores),0.80,1])
 line1 = plt.plot(scores, label="random", linewidth=2)
-#line2 = plt.plot((0,len(scores)),(0.895,0.895),"k--", linewidth=2)
+line2 = plt.plot((0,len(scores)),(0.924,0.924),"k--", linewidth=2)
 plt.show()
 print(cutOrder)
