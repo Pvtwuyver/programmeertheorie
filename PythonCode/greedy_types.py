@@ -48,6 +48,7 @@ def search(list, maxWidth, maxHeight, type):
 				return i
 		type -= 1
 	return None
+	
 def verticalFill(list, W, H, xIndex, yIndex, type):
 	xStart = xIndex
 	yStart = yIndex	

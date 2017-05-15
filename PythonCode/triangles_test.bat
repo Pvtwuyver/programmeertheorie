@@ -1,0 +1,2 @@
+python triangles_test.py
+pause
