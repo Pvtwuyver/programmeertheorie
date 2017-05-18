@@ -1,0 +1,2 @@
+python randomsampling.py
+pause

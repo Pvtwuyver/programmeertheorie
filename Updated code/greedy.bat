@@ -1,0 +1,2 @@
+python greedy.py
+pause
