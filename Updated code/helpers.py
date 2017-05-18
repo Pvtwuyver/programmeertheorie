@@ -39,8 +39,8 @@ class Order:
 		self.glasslist = sorted(self.glasslist, key=lambda x: (x[1]+x[0]), reverse=True)
 	
 	def score(self):
-		temp  = float((self.orderArea/(600*500)))/self.numberOfSheets
-		score = (self.orderArea/float(self.usedGlass))*temp
+		sheetscore  = float(ceil(self.orderArea/(600*500)))/self.numberOfSheets
+		score = (self.orderArea/float(self.usedGlass))*sheetscore
 		return score, self.numberOfSheets
 		
 	def reset(self, inputList):
