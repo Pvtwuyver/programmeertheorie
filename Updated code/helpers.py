@@ -41,7 +41,7 @@ class Order:
 	def score(self):
 		sheetscore  = ceil(self.orderArea/(600*500.0))/self.numberOfSheets
 		score = (self.orderArea/float(self.usedGlass))*sheetscore
-		return score, sheetscore
+		return score
 		
 	def reset(self, inputList):
 		self.glasslist = copy(inputList)
