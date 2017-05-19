@@ -20,6 +20,7 @@ class Order:
 		self.orderArea = totalArea(glasslist)
 		self.layout = [] # order in which windows are cut
 		self.usedGlass = 0
+		self.usePerSheet = []
 		self.numberOfSheets = 0
 	
 	def sortWidth(self):
@@ -39,8 +40,9 @@ class Order:
 		self.glasslist = sorted(self.glasslist, key=lambda x: (x[1]+x[0]), reverse=True)
 	
 	def score(self):
-		sheetscore  = ceil(self.orderArea/(600*500.0))/self.numberOfSheets
-		score = (self.orderArea/float(self.usedGlass))*sheetscore
+		score = self.orderArea / (self.usePerSheet[-1] + ((self.numberOfSheets - 1)*(600*500.0)))
+		#sheetscore  = ceil(self.orderArea/(600*500.0))/self.numberOfSheets
+		#score = (self.orderArea/float(self.usedGlass))*sheetscore
 		return score
 		
 	def reset(self, inputList):

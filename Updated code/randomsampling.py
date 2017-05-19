@@ -27,11 +27,13 @@ bestLayout = []
 scoreList = []
 
 # number of random samples
-for i in range(0,50000):
+for i in range(0,100000):
 	
 	while len(order1.glasslist) > 0:
 		order1.placeVertical("random", "", sheetWidth, sheetHeight, 0, 0)
+		order1.usePerSheet.append(order1.usedGlass)
 		order1.numberOfSheets += 1
+		order1.usedGlass = 0
 	score = order1.score()
 
 	if score > bestScore:
@@ -50,7 +52,9 @@ bestSeq = Order(bestLayout)
 while len(bestSeq.glasslist) > 0:
 	fig1 = plt.figure()
 	bestSeq.placeVertical("sequence", fig1, sheetWidth, sheetHeight, 0, 0)
+	bestSeq.usePerSheet.append(order1.usedGlass)
 	bestSeq.numberOfSheets += 1
+	bestSeq.usedGlass = 0
 	plt.axis([0,sheetWidth,0,sheetHeight])
 	plt.tick_params(axis='both', which='both', bottom='off', top='off', labelbottom='off', right='off', left='off', labelleft='off')
 	plt.plot()
