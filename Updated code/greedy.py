@@ -5,7 +5,6 @@ Cut glass using greedy method
 Carglass
 """""""""""""""""""""
 
-
 from helpers import *
 
 # define window order
@@ -20,23 +19,28 @@ glasslist = [[150,150],[50,110],[160,270],[130,270],[130,130],[190,160],[200,190
 #glasslist = [[300,200],[300,200],[200,100],[100,150],[100,200],[200,150],[150,200]]
 #glasslist = [[200,100],[100,200],[200,150],[150,200]]
 
-# appoint class
-order1 = Order(glasslist)
+def main():
 
-# set sheet size
-sheetWidth = 600
-sheetHeight = 500
+	# appoint class
+	order1 = Order(glasslist)
 
-while len(order1.glasslist) > 0:
-	fig1 = plt.figure()
-	order1.placeVertical("greedy", fig1, sheetWidth, sheetHeight, 0, 0)
-	order1.usePerSheet.append(order1.usedGlass)
-	order1.numberOfSheets += 1
-	order1.usedGlass = 0	
-	plt.axis([0,sheetWidth,0,sheetHeight])
-	plt.tick_params(axis='both', which='both', bottom='off', top='off', labelbottom='off', right='off', left='off', labelleft='off')
-	plt.plot()
+	# set sheet size
+	sheetWidth = 600
+	sheetHeight = 500
 
-print order1.layout
-print order1.score()
-plt.show()
+	while len(order1.glasslist) > 0:
+		fig1 = plt.figure()
+		order1.placeVertical("greedy", fig1, sheetWidth, sheetHeight, 0, 0)
+		order1.usePerSheet.append(order1.usedGlass)
+		order1.numberOfSheets += 1
+		order1.usedGlass = 0	
+		plt.axis([0,sheetWidth,0,sheetHeight])
+		plt.tick_params(axis='both', which='both', bottom='off', top='off', labelbottom='off', right='off', left='off', labelleft='off')
+		plt.plot()
+
+	print order1.layout
+	print order1.score()
+	plt.show()
+	
+if __name__ == "__main__":
+    main()
