@@ -28,7 +28,7 @@ def main():
 	scoreList = []
 
 	# number of random samples
-	for i in range(0,10):
+	for i in range(0,1):
 		
 		# cut glass
 		while len(order1.glasslist) > 0:

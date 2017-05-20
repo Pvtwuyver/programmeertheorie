@@ -156,7 +156,7 @@ class Order:
 					# no fitting window left
 					break
 			# draw rectangle and add to memory
-			addRectangle(figure, xIndex, yIndex, cutWidth, cutHeight) if (method != "random") and (method != "hill") else False		
+			addRectangle(figure, xIndex, yIndex, cutWidth, cutHeight) if (method == "greedy") or (method == "sequence") else False		
 			self.layout.append(cut)	
 			if yIndex == yStart:
 				# set column width if first cut
@@ -202,7 +202,7 @@ class Order:
 					# no fitting window left
 					break
 			# draw rectangle and add to memory
-			addRectangle(figure, xIndex, yIndex, cutWidth, cutHeight) if (method != "random") and (method != "hill") else False		
+			addRectangle(figure, xIndex, yIndex, cutWidth, cutHeight) if (method == "greedy") or (method == "sequence") else False		
 			self.layout.append(cut)	
 			if xIndex == xStart:
 				# set row height if first cut
@@ -227,6 +227,9 @@ class Order:
 			# update (x,y)		
 			xIndex += cutWidth
 			colWidth = sheetWidth - (xIndex - xStart)
+			
+			
+				
 					
 
 		
@@ -274,3 +277,18 @@ def plotScores(scores):
 	line1 = plt.plot(scores, linewidth=2)
 	#line2 = plt.plot((0,len(scores)),(0.924,0.924),"k--", linewidth=2)
 	plt.show()
+	
+def randomOrder(list):
+	inputList = deepcopy(list)
+	order = []
+	while len(inputList) > 0:
+		# randomize window
+		temp = random.choice(inputList)
+		# randomize orientation
+		if (random.random() < 0.5):
+			cut = temp[::-1]
+		else:
+			cut = temp
+		order.append(cut)
+		inputList.remove(temp)
+	return order
