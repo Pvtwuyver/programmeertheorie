@@ -119,14 +119,14 @@ class Order:
 				bigSide, smallSide = max(item[0],item[1]), min(item[0],item[1])
 				item[0], item[1] = bigSide, smallSide
 			self.sortWidth()
-			#self.sortArea()
+			#self.sortCirc()
 		elif side == "height":
 			# maximize height
 			for item in self.glasslist:
 				bigSide, smallSide = max(item[0],item[1]), min(item[0],item[1])
 				item[0], item[1] = smallSide, bigSide
 			self.sortHeight()		
-			#self.sortArea()
+			#self.sortCirc()
 		
 	def placeVertical(self, method, figure, sheetWidth, sheetHeight, xIndex, yIndex):
 	
@@ -249,3 +249,28 @@ def addRectangle(figure, xIndex, yIndex, cutWidth, cutHeight):
 		)
 	)
 
+def plotOrder(order, sheetWidth, sheetHeight):
+	# plot sequence
+	while len(order.glasslist) > 0:
+		fig1 = plt.figure()
+		order.placeVertical("sequence", fig1, sheetWidth, sheetHeight, 0, 0)
+		order.usePerSheet.append(order.usedGlass)
+		order.numberOfSheets += 1
+		order.usedGlass = 0
+		plt.axis([0,sheetWidth,0,sheetHeight])
+		plt.tick_params(axis='both', which='both', bottom='off', top='off', labelbottom='off', right='off', left='off', labelleft='off')
+		plt.plot()
+	score = order.score()
+	
+	print order.layout
+	print "Score: ", score
+	
+	plt.show()
+	
+def plotScores(scores):
+	# plot scores
+	fig2 = plt.figure()
+	#plt.axis([0,len(scoreList),0.65,1])
+	line1 = plt.plot(scores, linewidth=2)
+	#line2 = plt.plot((0,len(scores)),(0.924,0.924),"k--", linewidth=2)
+	plt.show()
