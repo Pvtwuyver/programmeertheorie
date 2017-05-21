@@ -39,13 +39,13 @@ def main():
 	
 	beginT = 0.5#1
 	endT = 0.00005#0.0001
-	iterations = 1000000
+	iterations = 100000
 
 	# number of iterations
 	for i in range(iterations):
 		
 		#temperature = temperature*(0.99999997**i)
-		temperature = beginT*((endT/beginT)**(i/float(iterations)))
+		temperature = beginT * ((endT / beginT) ** (i / float(iterations)))
 		
 		# cut glass
 		while len(order1.glasslist) > 0:
@@ -83,7 +83,7 @@ def main():
 def acceptProbability(score, best, temp):
 	if score > best:
 		return 1.0
-	return exp((score - best)/temp)
+	return exp((score - best) / temp)
 	
 	
 if __name__ == "__main__":

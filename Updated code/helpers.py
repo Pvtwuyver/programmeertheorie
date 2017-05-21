@@ -33,16 +33,16 @@ class Order:
 	
 	def sortArea(self):
 		# sort by area
-		self.glasslist = sorted(self.glasslist, key=lambda x: (x[1]*x[0]), reverse=True)
+		self.glasslist = sorted(self.glasslist, key=lambda x: (x[1] * x[0]), reverse=True)
 		
 	def sortCirc(self):
 		# sort by circumference
-		self.glasslist = sorted(self.glasslist, key=lambda x: (x[1]+x[0]), reverse=True)
+		self.glasslist = sorted(self.glasslist, key=lambda x: (x[1] + x[0]), reverse=True)
 	
 	def score(self):
-		score = self.orderArea / (self.usePerSheet[-1] + ((self.numberOfSheets - 1)*(600*500.0)))
-		#sheetscore  = ceil(self.orderArea/(600*500.0))/self.numberOfSheets
-		#score = (self.orderArea/float(self.usedGlass))*sheetscore
+		score = self.orderArea / (self.usePerSheet[-1] + ((self.numberOfSheets - 1) * (600 * 500.0)))
+		#sheetscore  = ceil(self.orderArea / (600 * 500.0)) / self.numberOfSheets
+		#score = (self.orderArea / float(self.usedGlass)) * sheetscore
 		return score
 		
 	def reset(self, inputList):
@@ -67,7 +67,7 @@ class Order:
 			
 	def randomTurn(self):
 		# rotate one of the windows by 90 degrees
-		n = random.randint(0, len(self.glasslist)-1)
+		n = random.randint(0, len(self.glasslist) - 1)
 		self.glasslist[n][0], self.glasslist[n][1] = self.glasslist[n][1], self.glasslist[n][0]
 		
 	def search(self, maxWidth, maxHeight, method):
@@ -169,7 +169,7 @@ class Order:
 				colWidth = cutWidth
 				if yIndex == 0:
 					# add column to used glass
-					self.usedGlass += cutWidth*sheetHeight
+					self.usedGlass += cutWidth * sheetHeight
 			# room left?	
 			if (cutHeight > (colWidth - cutWidth)) and ((colWidth - cutWidth) > 0) and (method == "greedy"):
 				self.placeHorizontal(method, figure, colWidth - cutWidth, cutHeight, xIndex + cutWidth, yIndex)
@@ -243,7 +243,7 @@ class Order:
 def totalArea(list):
 	area = 0
 	for i in list:
-		area += i[0]*i[1]
+		area += i[0] * i[1]
 	return area					
 					
 					
