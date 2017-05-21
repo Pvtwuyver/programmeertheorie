@@ -52,6 +52,7 @@ class Order:
 		self.numberOfSheets = 0
 		
 	def randomSwap(self, numberOfSwaps):
+		#swap windows within order
 		for i in range(numberOfSwaps):
 			# pick random windows
 			n = random.randint(0, len(self.glasslist)-1)
@@ -63,6 +64,11 @@ class Order:
 				self.glasslist[m][0], self.glasslist[m][1] = min(self.glasslist[m]), max(self.glasslist[m])
 			# swap items
 			self.glasslist[n], self.glasslist[m] = self.glasslist[m], self.glasslist[n]
+			
+	def randomTurn(self):
+		# rotate one of the windows by 90 degrees
+		n = random.randint(0, len(self.glasslist)-1)
+		self.glasslist[n][0], self.glasslist[n][1] = self.glasslist[n][1], self.glasslist[n][0]
 		
 	def search(self, maxWidth, maxHeight, method):
 		# select a window from glasslist
@@ -119,14 +125,14 @@ class Order:
 				bigSide, smallSide = max(item[0],item[1]), min(item[0],item[1])
 				item[0], item[1] = bigSide, smallSide
 			self.sortWidth()
-			#self.sortCirc()
+			#self.sortArea()
 		elif side == "height":
 			# maximize height
 			for item in self.glasslist:
 				bigSide, smallSide = max(item[0],item[1]), min(item[0],item[1])
 				item[0], item[1] = smallSide, bigSide
 			self.sortHeight()		
-			#self.sortCirc()
+			#self.sortArea()
 		
 	def placeVertical(self, method, figure, sheetWidth, sheetHeight, xIndex, yIndex):
 	
@@ -248,7 +254,8 @@ def addRectangle(figure, xIndex, yIndex, cutWidth, cutHeight):
 			(xIndex, yIndex),   # (x,y)
 			cutWidth,          # width
 			cutHeight,          # height
-			facecolor = "#efda62"
+			facecolor = "#efda62",
+			linewidth = 2.0
 		)
 	)
 

@@ -37,9 +37,9 @@ def main():
 
 	scoreList = []
 	
-	beginT = 1
-	endT = 0.0001
-	iterations = 100000
+	beginT = 0.5#1
+	endT = 0.00005#0.0001
+	iterations = 1000000
 
 	# number of iterations
 	for i in range(iterations):
@@ -65,10 +65,14 @@ def main():
 		print i, bestScore
 		scoreList.append(bestScore)
 
-		# reset to best layout and make new swap
+		# reset to best layout and make new swap or turn
 		order1.reset(deepcopy(bestLayout))
-		order1.randomSwap(1)
-	
+		#order1.randomSwap(1)
+		if (random.random() < 0.5):
+			order1.randomSwap(1)
+		else:
+			order1.randomTurn()
+		
 	# plot best sequence of cuts
 	bestSeq = Order(bestLayout)
 	plotOrder(bestSeq, sheetWidth, sheetHeight)
